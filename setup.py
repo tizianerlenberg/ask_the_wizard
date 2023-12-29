@@ -20,7 +20,7 @@ setup(
         "Programming Language :: Python :: 3.10",
         "Operating System :: OS Independent",
     ],
-    install_requires=[],
+    install_requires=["python-dotenv~=1.0.0", "openai~=1.6.1"],
     extras_require={
         "dev": ["pytest>=7.0", "twine>=4.0.2"],
     },
