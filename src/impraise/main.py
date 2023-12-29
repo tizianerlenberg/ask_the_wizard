@@ -1,20 +1,19 @@
+import ast
+import importlib.abc
+import importlib.machinery
 import os
+import re
+import sys
+import types
 from typing import Optional
 
 from dotenv import load_dotenv
 from openai import OpenAI
 
-###
-
-import sys
-import ast
-import types
-import importlib.abc
-import importlib.machinery
-
 load_dotenv()
 
-class Wizard():
+
+class Wizard:
     _API_KEY = os.environ.get('OPENAI_API_KEY')
 
     def __init__(self, api_key=None, model='gpt-3.5-turbo'):
@@ -38,8 +37,6 @@ class Wizard():
 
     def ensure_initialized(self):
         """Ensures that the client is initialized."""
-        self._client
-
         if self._client is None:
             self._client = OpenAI(api_key=self._api_key)
 
@@ -65,17 +62,26 @@ class Wizard():
 
         response_text = chat_completion.choices[0].message.content
 
-        # Check if only python code was generated
-        if not response_text.startswith('```python') or not response_text.endswith('```'):
+        print('The wizard said:\n')
+        print(response_text)
+
+        # Extract the first python code block
+        match = re.search(r'```python\n(.*?)\n```', response_text, re.DOTALL)
+
+        if match:
+            # Remove the ```python and ``` from the code
+            code = match.group(1)
+        else:
+            print(response_text)
             raise ValueError('The request did not generate python code. Congratulations, you broke the wizard.')
 
-        # Remove the ```python and ``` from the code
-        return response_text[10:-3]
+        return code
+
 
 class WizardFinder(importlib.abc.MetaPathFinder):
     def __init__(self, wizard=Wizard()):
         self._wizard = wizard
-    
+
     @classmethod
     def is_valid_python_source(cls, code: str) -> bool:
         try:
@@ -83,7 +89,7 @@ class WizardFinder(importlib.abc.MetaPathFinder):
             return True
         except SyntaxError:
             return False
-    
+
     def find_spec(self, fullname, path, target=None):
         spec = self._find_py_file_spec(fullname)
         if spec is not None:
@@ -121,6 +127,7 @@ class WizardFinder(importlib.abc.MetaPathFinder):
             return None
         return source
 
+
 class WizardLoader(importlib.abc.Loader):
     def __init__(self, fullname, source_code, location):
         self._fullname = fullname
@@ -142,17 +149,19 @@ class WizardLoader(importlib.abc.Loader):
     def get_source(self, name):
         return self._source_code
 
+
 ########
 
 def register_wizard():
     sys.meta_path.append(WizardFinder())
 
-#register_wizard()
+
+register_wizard()
 
 ########
 
 if __name__ == '__main__':
-    code = Wizard().request_code_from_wizard(
+    _code = Wizard().request_code_from_wizard(
         'function_that_adds_two_numbers_named_add_two_numbers_and_another_function_to_calculate_the_square_of_a_number_named_square_number'
     )
-    print(code)
+    print(_code)
