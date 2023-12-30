@@ -24,6 +24,7 @@ class WizardFinder(importlib.abc.MetaPathFinder):
             return False
 
     def find_spec(self, fullname, path, target=None):
+        print(f'WIZARD IMPORTER: {fullname}')
         spec = self._find_py_file_spec(fullname)
         if spec is not None:
             return spec

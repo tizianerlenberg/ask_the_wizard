@@ -32,7 +32,8 @@ class WizardCommunication:
         
         'Your task is to create a Python function encapsulated within triple backticks (```). You may import any '
         'modules you wish. You may define any number of functions, classes, or variables. The last statement in your '
-        'code must call the function you defined in the previous step. '
+        'code must call the function you defined in the previous step with the parameters defined below and assign '
+        'the result to the variable named result. '
         
         'No additional information will be provided. In cases of ambiguity, make an educated guess to '
         'interpret the request. '
@@ -60,7 +61,10 @@ class WizardCommunication:
         self._request_prefix_function = request_prefix_function or self.REQUEST_PREFIX_FUNCTION
         self._model = model
         self._client = None  # type: Optional[OpenAI]
+
         self.logger = logging.getLogger('WizardCommunication')
+        self.logger.addHandler(logging.StreamHandler())
+        self.logger.setLevel(logging.DEBUG)
 
     def _ensure_initialized(self):
         """Ensures that the client is initialized."""
@@ -100,7 +104,7 @@ class WizardCommunication:
         response_text = self.request(request=request, request_prefix=request_prefix)
 
         # Extract the first python code block
-        match = re.search(r'.*```python\n(.*?)\n```.*', response_text, re.DOTALL)
+        match = re.search(r'.*```(?:python\n)?(.*?)\n```.*', response_text, re.DOTALL)
 
         if match:
             code = match.group(1)

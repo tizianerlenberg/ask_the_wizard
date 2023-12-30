@@ -7,6 +7,7 @@ class PipImporterFinder(importlib.abc.MetaPathFinder):
     def __init__(self):
         pass
     def find_spec(self, fullname, path, target=None):
+        print(f'PIP IMPORTER: {fullname}')
         subprocess.call(["pip", "install", fullname])
         module = importlib.import_module(fullname)
         return module
@@ -15,6 +16,6 @@ class PipImporterFinder(importlib.abc.MetaPathFinder):
     @classmethod
     def register_importer(cls):
         obj = cls()
-        obj.register()()
+        obj.register()
 
 PipImporterFinder.register_importer()
