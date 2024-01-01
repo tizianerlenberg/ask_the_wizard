@@ -6,14 +6,14 @@ import types
 
 from dotenv import load_dotenv
 
-from src.impraise.wizard_communication import WizardCommunication
+from .wizard_communication import WizardCommunication
 
 load_dotenv()
 
 
 class WizardFinder(importlib.abc.MetaPathFinder):
-    def __init__(self, wizard_communication=None):
-        self._wizard_communication = wizard_communication or WizardCommunication()
+    def __init__(self, wizard_communication=None, api_key: str = None, model: str = None):
+        self._wizard_communication = wizard_communication or WizardCommunication(api_key=api_key, model=model)
 
     @classmethod
     def is_valid_python_source(cls, code: str) -> bool:

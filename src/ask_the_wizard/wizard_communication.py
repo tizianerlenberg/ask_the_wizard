@@ -8,6 +8,7 @@ from openai import OpenAI
 
 load_dotenv()
 
+logger = logging.getLogger(__name__)
 
 class WizardCommunication:
     API_KEY = os.environ.get('OPENAI_API_KEY')
@@ -67,12 +68,8 @@ class WizardCommunication:
         self._api_key = api_key or self.API_KEY
         self._request_prefix_import = request_prefix_import or self.REQUEST_PREFIX_IMPORT
         self._request_prefix_function = request_prefix_function or self.REQUEST_PREFIX_FUNCTION
-        self._model = model
+        self._model = model or 'gpt-3.5-turbo'
         self._client = None  # type: Optional[OpenAI]
-
-        self.logger = logging.getLogger('WizardCommunication')
-        self.logger.addHandler(logging.StreamHandler())
-        self.logger.setLevel(logging.INFO)
 
     def _ensure_initialized(self):
         """Ensures that the client is initialized."""
@@ -89,7 +86,7 @@ class WizardCommunication:
 
         :return: The response from the wizard.
         """
-        self.logger.debug(f'Sending request to Wizard:\n{request_prefix}{request}')
+        logger.debug(f'Sending request to Wizard:\n{request_prefix}{request}')
 
         self._ensure_initialized()
 
@@ -104,7 +101,7 @@ class WizardCommunication:
         )
 
         response_text = chat_completion.choices[0].message.content
-        self.logger.info(f'Received response from wizard:\n{response_text}')
+        logger.info(f'Received response from wizard:\n{response_text}')
 
         return response_text
 
@@ -129,7 +126,7 @@ class WizardCommunication:
 
         :return: The generated code.
         """
-        self.logger.debug(f'Requesting import code for request: {request}')
+        logger.debug(f'Requesting import code for request: {request}')
 
         return self._request_code(request=request, request_prefix=self._request_prefix_import)
 
@@ -141,6 +138,6 @@ class WizardCommunication:
 
         :return: The generated code.
         """
-        self.logger.debug(f'Requesting function code for request: {request}')
+        logger.debug(f'Requesting function code for request: {request}')
 
         return self._request_code(request=request, request_prefix=self._request_prefix_function)

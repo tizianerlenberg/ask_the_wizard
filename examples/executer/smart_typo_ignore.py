@@ -1,4 +1,9 @@
-from src.impraise.wizard_executer import WizardExecuter
+import logging
+from ask_the_wizard.wizard_executer import WizardExecuter
+
+logger = logging.getLogger('ask_the_wizard')
+logger.addHandler(logging.StreamHandler())
+logger.setLevel(logging.WARNING)
 
 
 def main():

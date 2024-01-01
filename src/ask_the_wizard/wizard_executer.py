@@ -1,13 +1,13 @@
 import inspect
 
 # noinspection PyUnresolvedReferences
-import src.impraise.pip_importer
-from src.impraise.wizard_communication import WizardCommunication
+from . import pip_importer
+from .wizard_communication import WizardCommunication
 
 
 class WizardExecuter:
-    def __init__(self, wizard_communication: WizardCommunication = None):
-        self.wizard_communication = wizard_communication or WizardCommunication()
+    def __init__(self, wizard_communication: WizardCommunication = None, api_key: str = None, model: str = None):
+        self.wizard_communication = wizard_communication or WizardCommunication(api_key=api_key, model=model)
 
     def __getattr__(self, key):
         def method(*args, **kwargs):
