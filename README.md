@@ -24,19 +24,25 @@ pip install impraise
 
 *If this doesn't work, try shouting at your computer in Python. It understands passion. 📣*
 
+To use this module you will need an OpenAI API key.
+You can create your own API key at https://beta.openai.com/account/api-keys.
+Then you can set the API key as an environment variable and run your script:
+
+```bash
+OPENAI_API_KEY=YOUR_API_KEY python my_script.py
+```
+
 ## Usage 📚
 
-This is a simple example that imports a greet_person function from the wizard and greets a person. The greeting is
-randomized, so you never know what you're going to get! 🎲
+Basic example:
 
 ```python
-# noinspection PyUnresolvedReferences
-import src.impraise.main
-import a_function_that_takes_a_name_and_an_age_as_input_that_is_42_if_not_given_and_greets_the_person_and_says_their_age_Make_the_greeting_text_random_but_do_not_add_a_basic_random_number_to_the_text_Choose_between_at_least_ten_greetings_and_sentence_structures_in_each_function_call_Remember_what_you_have_chosen_between_the_function_calls_and_cycle_through_the_options_at_each_new_call_The_function_should_be_called_greet_person_Use_the_globals_function_to_save_this_state as wizard
+from src.impraise.wizard_executer import WizardExecuter
 
-if __name__ == '__main__':
-    print(wizard.greet_person('John'))
-    print(wizard.greet_person('John', age=23))
+wizard_executer = WizardExecuter()
+
+result = wizard_executer.add_numbers(6, 3)
+print(result)
 ```
 
 ## Contributing 🤝
