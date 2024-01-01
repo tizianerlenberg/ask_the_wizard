@@ -1,9 +1,8 @@
 import inspect
-from functools import cache
 
-from src.impraise.wizard_communication import WizardCommunication
 # noinspection PyUnresolvedReferences
 import src.impraise.pip_importer
+from src.impraise.wizard_communication import WizardCommunication
 
 
 class WizardExecuter:
@@ -40,7 +39,7 @@ class WizardExecuter:
             function_details += f'Keyword arguments: {kwargs_details}\n'
 
             code = self.wizard_communication.request_function_code(function_details)
-            exec_globals = {}
+            exec_globals = {'result': None}
             exec(code, exec_globals)
             result = exec_globals['result']
 
